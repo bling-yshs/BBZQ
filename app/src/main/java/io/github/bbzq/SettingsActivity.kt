@@ -248,15 +248,13 @@ class SettingsActivity : Activity() {
     // ── In-activity Navigation ────────────────────────────────────────────────
 
     private fun allowedPage(page: String): String =
-        if (page in SETTINGS_PAGES || SettingsCategory.forPage(page) != null) page else PAGE_ROOT
+        if (hostEntry || page in STANDALONE_PAGES) page else PAGE_ROOT
 
     private fun navigateTo(page: String) {
-        // The standalone entry edits the same preferences as the host entry.
-        // Every visible category must be reachable regardless of how settings were opened.
-        val targetPage = allowedPage(page)
-        if (pageStack.lastOrNull() == targetPage) return
-        pageStack.addLast(targetPage)
-        switchContent(targetPage)
+        if (!hostEntry && page !in STANDALONE_PAGES) return
+        if (pageStack.lastOrNull() == page) return
+        pageStack.addLast(page)
+        switchContent(page)
     }
 
     private fun navigateBack() {
@@ -800,16 +798,7 @@ class SettingsActivity : Activity() {
         const val PAGE_CONFIG_BACKUP = "config_backup"
         const val PAGE_SEA_BANGUMI_UNLOCK = "sea_bangumi_unlock"
         const val PAGE_ABOUT = "about"
-        private val SETTINGS_PAGES = setOf(
-            PAGE_ROOT,
-            PAGE_SKIP_VIDEO_AD_SWITCH,
-            PAGE_SKIP_VIDEO_AD_CATEGORY,
-            PAGE_HIDDEN_FEATURES,
-            PAGE_UPDATE,
-            PAGE_CONFIG_BACKUP,
-            PAGE_SEA_BANGUMI_UNLOCK,
-            PAGE_ABOUT,
-        )
+        private val STANDALONE_PAGES = setOf(PAGE_ROOT, PAGE_UPDATE, PAGE_ABOUT)
         const val PAGE_CATEGORY_APPEARANCE = "category_appearance"
         const val PAGE_CATEGORY_SHARE = "category_share"
         const val PAGE_CATEGORY_STARTUP = "category_startup"
