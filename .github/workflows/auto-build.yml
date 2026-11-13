@@ -12,25 +12,9 @@ concurrency:
 
 jobs:
   build:
-    name: 🛠️ 构建 ${{ matrix.label }} (Build ${{ matrix.label }})
+    name: 🛠️ 构建 arm64-v8a (Build arm64-v8a)
     runs-on: ubuntu-24.04
     timeout-minutes: 45
-    strategy:
-      fail-fast: false
-      matrix:
-        include:
-          - label: arm64-v8a
-            abis: arm64-v8a
-            suffix: arm64-v8a
-          - label: armeabi-v7a
-            abis: armeabi-v7a
-            suffix: armv7a
-          - label: uni
-            abis: arm64-v8a,armeabi-v7a,x86_64
-            suffix: uni
-          - label: x86_64
-            abis: x86_64
-            suffix: x86_64
 
     steps:
       - name: 检出代码 (Checkout)
@@ -90,12 +74,7 @@ jobs:
         run: chmod +x ./gradlew
 
       - name: 运行 build 构建 (Run Gradle Build)
-        run: |
-          tasks="assembleRelease"
-          if [ "${{ matrix.label }}" = "uni" ]; then
-            tasks="assembleDebug $tasks"
-          fi
-          ./gradlew --no-daemon --build-cache -PbbzqAbiFilters="${{ matrix.abis }}" -PbbzqOutputSuffix="${{ matrix.suffix }}" $tasks
+        run: ./gradlew --no-daemon --build-cache -PbbzqAbiFilters=arm64-v8a -PbbzqOutputSuffix=arm64-v8a assembleRelease
 
       - name: 整理构建产物 (Prepare Build Artifacts)
         run: |
@@ -106,26 +85,9 @@ jobs:
             exit 1
           fi
           mkdir -p artifacts/release
-          cp "${release_apks[0]}" "artifacts/release/bbzq-${VERSION}-${{ matrix.label }}-release.apk"
-          if [ "${{ matrix.label }}" = "uni" ]; then
-            debug_apks=(app/build/outputs/apk/debug/*.apk)
-            if [ "${#debug_apks[@]}" -ne 1 ]; then
-              echo "::error::Expected one debug APK, found ${#debug_apks[@]}"
-              exit 1
-            fi
-            mkdir -p artifacts/debug
-            cp "${debug_apks[0]}" "artifacts/debug/bbzq-${VERSION}-uni-debug.apk"
-          fi
+          cp "${release_apks[0]}" "artifacts/release/bbzq-${VERSION}-arm64-v8a-release.apk"
 
-      - name: 上传调试产物 (Upload Debug Artifact)
-        if: matrix.label == 'uni'
-        uses: actions/upload-artifact@v7
-        with:
-          path: artifacts/debug/*.apk
-          archive: false
-          if-no-files-found: error
-
-      - name: 上传发布产物 (Upload Release Artifact)
+      - name: 上传构建产物 (Upload Build Artifacts)
         uses: actions/upload-artifact@v7
         with:
           path: artifacts/release/*.apk
