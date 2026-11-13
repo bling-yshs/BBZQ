@@ -6,21 +6,33 @@ import android.app.Application
 import android.content.ClipData
 import android.content.ClipboardManager
 import android.os.Bundle
+import android.os.SystemClock
+import android.view.View
+import android.view.ViewGroup
 import android.widget.TextView
+import android.widget.Toast
 import io.github.bbzq.ModuleSettings
 import io.github.bbzq.R
 import io.github.bbzq.feats.BaseRoamingHook
 import io.github.bbzq.feats.RoamingEnv
+import io.github.bbzq.feats.getObjectField
 import io.github.bbzq.feats.hookBefore
 import java.lang.ref.WeakReference
 import java.util.concurrent.atomic.AtomicBoolean
 
 class FreeCopyHook(env: RoamingEnv) : BaseRoamingHook(env) {
+    @Volatile private var lastBlockedCopyAt: Long? = null
+
     override fun startHook() {
+        if (isInstalled) return
         ensureActivityTracking()
+        hookDescriptionCopyToast()
         val method = ClipboardManager::class.java.getDeclaredMethod("setPrimaryClip", ClipData::class.java)
-        env.hookBefore(method) { param ->
+        isInstalled = env.hookBefore(method) { param ->
             runCatching {
+                // An allowed copy supersedes any earlier blocked copy, including the dialog's
+                // explicit "copy original" action and share links exempted below.
+                lastBlockedCopyAt = null
                 if (!isRemoveDirectCopyEnabled()) return@runCatching
                 if (allowOriginalCopy.get() == true) return@runCatching
 
@@ -31,13 +43,40 @@ class FreeCopyHook(env: RoamingEnv) : BaseRoamingHook(env) {
                 if (isEnhancedCopyEnabled()) {
                     showCopyDialog(text, clip)
                 }
+                lastBlockedCopyAt = SystemClock.uptimeMillis()
                 param.result = null
             }.onFailure { throwable ->
                 log("FreeCopy hook error", throwable)
             }
         }
-        log("startHook: FreeCopy, methods=1")
+        log("startHook: FreeCopy, clipboardInstalled=$isInstalled")
     }
+
+    private fun hookDescriptionCopyToast() {
+        val show = Toast::class.java.getDeclaredMethod("show")
+        env.hookBefore(show) { param ->
+            if (!isRemoveDirectCopyEnabled() || allowOriginalCopy.get() == true) return@hookBefore
+            val blockedAt = lastBlockedCopyAt ?: return@hookBefore
+            if (SystemClock.uptimeMillis() - blockedAt !in 0..COPY_TOAST_WINDOW_MS) return@hookBefore
+            val toast = param.thisObject as? Toast ?: return@hookBefore
+            // Android 11+ text toasts use mText; custom and older toasts use a view.
+            val text = toast.getObjectField("mText") as? CharSequence
+            val view = toast.getObjectField("mNextView") as? View
+            if (!isDescriptionCopyNotice(text) && !containsDescriptionCopyNotice(view)) return@hookBefore
+
+            lastBlockedCopyAt = null
+            param.result = null
+        }
+    }
+
+    private fun containsDescriptionCopyNotice(view: View?): Boolean = when (view) {
+        is TextView -> isDescriptionCopyNotice(view.text)
+        is ViewGroup -> (0 until view.childCount).any { containsDescriptionCopyNotice(view.getChildAt(it)) }
+        else -> false
+    }
+
+    private fun isDescriptionCopyNotice(text: CharSequence?): Boolean =
+        text?.toString()?.trim()?.trimEnd('。', '！', '!', '.') in DESCRIPTION_COPY_NOTICES
 
     private fun ensureActivityTracking() {
         val application = env.hostContext as? Application ?: return
@@ -144,6 +183,12 @@ class FreeCopyHook(env: RoamingEnv) : BaseRoamingHook(env) {
     }
 
     private companion object {
+        private const val COPY_TOAST_WINDOW_MS = 1_500L
+        private val DESCRIPTION_COPY_NOTICES = setOf(
+            "已复制视频简介内容",
+            "已複製視頻簡介內容",
+            "已複製影片簡介內容",
+        )
         private val callbacksRegistered = AtomicBoolean(false)
         private val allowOriginalCopy = ThreadLocal<Boolean>()
         private val BV_ID_REGEX = Regex("""BV[a-zA-Z0-9]{10}""")
