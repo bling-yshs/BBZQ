@@ -358,6 +358,8 @@
     <string name="list_separator">", "</string>
     <string name="free_copy_title">Free copy</string>
     <string name="free_copy_original_button">Copy selection</string>
+    <string name="comment_classic_style_title">Restore classic comments</string>
+    <string name="comment_classic_style_summary">Restore the built-in classic comment layout. Fully close and restart Bilibili after changing this setting. Requires the host to retain its classic components.</string>
     <string name="comment_disable_title">Hide comments completely</string>
     <string name="comment_disable_summary">Removes the comments tab from the video page.</string>
     <string name="comment_no_quick_reply_title">Block tap-to-reply</string>

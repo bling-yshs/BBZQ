@@ -150,6 +150,7 @@ object ModuleSettings {
     const val KEY_HOST_ACCOUNT_NAME = "host_account_name"
     const val KEY_HIDE_DESKTOP_ICON = "hide_desktop_icon"
     const val KEY_ACCEPT_PRERELEASE_UPDATE = "accept_prerelease_update"
+    const val KEY_COMMENT_CLASSIC_STYLE = "vid_comment_classic_style"
     const val KEY_COMMENT_DISABLE = "vid_comment_disable"
     const val KEY_COMMENT_NO_QUICK_REPLY = "vid_comment_no_quick_reply"
     const val KEY_COMMENT_NO_VOTE = "vid_comment_no_vote"
@@ -402,6 +403,7 @@ object ModuleSettings {
         ExportableConfigSpec(KEY_UNLOCK_COMMENT_GIF_ENABLED, ExportableValueType.BOOLEAN) { it.getBoolean(KEY_UNLOCK_COMMENT_GIF_ENABLED, false) },
         ExportableConfigSpec(KEY_HIDE_DESKTOP_ICON, ExportableValueType.BOOLEAN) { it.getBoolean(KEY_HIDE_DESKTOP_ICON, false) },
         ExportableConfigSpec(KEY_ACCEPT_PRERELEASE_UPDATE, ExportableValueType.BOOLEAN) { it.getBoolean(KEY_ACCEPT_PRERELEASE_UPDATE, false) },
+        ExportableConfigSpec(KEY_COMMENT_CLASSIC_STYLE, ExportableValueType.BOOLEAN) { it.getBoolean(KEY_COMMENT_CLASSIC_STYLE, false) },
         ExportableConfigSpec(KEY_COMMENT_DISABLE, ExportableValueType.BOOLEAN) { it.getBoolean(KEY_COMMENT_DISABLE, false) },
         ExportableConfigSpec(KEY_COMMENT_NO_QUICK_REPLY, ExportableValueType.BOOLEAN) { it.getBoolean(KEY_COMMENT_NO_QUICK_REPLY, false) },
         ExportableConfigSpec(KEY_COMMENT_NO_VOTE, ExportableValueType.BOOLEAN) { it.getBoolean(KEY_COMMENT_NO_VOTE, false) },
@@ -1173,6 +1175,9 @@ object ModuleSettings {
 
     fun isAcceptPrereleaseUpdateEnabled(prefs: SharedPreferences): Boolean =
         prefs.getBoolean(KEY_ACCEPT_PRERELEASE_UPDATE, false)
+
+    fun isCommentClassicStyleEnabled(prefs: SharedPreferences): Boolean =
+        prefs.getBoolean(KEY_COMMENT_CLASSIC_STYLE, false)
 
     fun isCommentDisableEnabled(prefs: SharedPreferences): Boolean =
         prefs.getBoolean(KEY_COMMENT_DISABLE, false)

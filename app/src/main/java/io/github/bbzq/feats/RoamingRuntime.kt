@@ -53,6 +53,7 @@ import io.github.bbzq.feats.hook.StoryPlayerAdHook
 import io.github.bbzq.feats.hook.BackgroundPlayHook
 import io.github.bbzq.feats.hook.BlockUpdateHook
 import io.github.bbzq.feats.hook.VideoCommentHook
+import io.github.bbzq.feats.hook.CommentClassicStyleHook
 import io.github.bbzq.feats.hook.VideoDetailBannerAdHook
 import io.github.bbzq.feats.hook.VideoDetailRelateFilterHook
 import io.github.bbzq.feats.hook.VideoMentionHook
@@ -144,6 +145,12 @@ object RoamingRuntime {
         }
 
         ModuleSettingsBridge.attach(env.hostContext, xposed)
+        // Comment experiment results are cached by the host. Install before symbol scanning
+        // or other hooks can initialize comment classes and evaluate their lazy values.
+        if (processScope == ProcessScope.MAIN) {
+            runCatching { CommentClassicStyleHook(env).startHook() }
+                .onFailure { env.log("CommentClassicStyleHook failed", it) }
+        }
         if (processScope == ProcessScope.MAIN) {
             runCatching {
                 RuntimeEnvironmentInfo.recordRuntimeSnapshot(

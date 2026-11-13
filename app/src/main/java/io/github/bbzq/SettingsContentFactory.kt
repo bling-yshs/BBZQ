@@ -1182,6 +1182,13 @@ class SettingsContentFactory(
     private fun commentRows(): List<View> {
         return listOf(
             createSwitchRow(
+                context.getString(R.string.comment_classic_style_title),
+                context.getString(R.string.comment_classic_style_summary),
+                ModuleSettings.KEY_COMMENT_CLASSIC_STYLE,
+                false,
+                restartBadges(),
+            ),
+            createSwitchRow(
                 context.getString(R.string.comment_keyword_filter_title),
                 context.getString(R.string.comment_keyword_filter_summary),
                 ModuleSettings.KEY_COMMENT_KEYWORD_FILTER_ENABLED,

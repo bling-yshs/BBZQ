@@ -358,6 +358,8 @@
     <string name="list_separator">、</string>
     <string name="free_copy_title">自由複製</string>
     <string name="free_copy_original_button">複製選取內容</string>
+    <string name="comment_classic_style_title">恢復舊版評論區</string>
+    <string name="comment_classic_style_summary">恢復嗶哩嗶哩內建的舊版評論版面。修改後需完全退出並重新啟動嗶哩嗶哩；宿主需保留舊版元件。</string>
     <string name="comment_disable_title">完全隱藏評論區</string>
     <string name="comment_disable_summary">從影片詳情頁移除評論區分頁。</string>
     <string name="comment_no_quick_reply_title">阻止點擊快速回覆</string>

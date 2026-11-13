@@ -394,6 +394,8 @@
     <string name="free_copy_original_button">复制选择内容</string>
 
     <!-- 评论区 -->
+    <string name="comment_classic_style_title">恢复旧版评论区</string>
+    <string name="comment_classic_style_summary">恢复哔哩哔哩内置的旧版评论布局。修改后需完全退出并重启哔哩哔哩；宿主需保留旧版组件。</string>
     <string name="comment_disable_title">完全隐藏评论区</string>
     <string name="comment_disable_summary">从视频详情页移除评论区标签。</string>
     <string name="comment_no_quick_reply_title">阻止点击快速回复</string>
