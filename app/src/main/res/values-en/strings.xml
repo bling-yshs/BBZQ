@@ -60,9 +60,9 @@
     <string name="disable_live_room_vertical_swipe_title">Disable swipe to switch live rooms</string>
     <string name="disable_live_room_vertical_swipe_summary">Turns off the up/down swipe gesture that switches to another live room, to avoid accidental switches.</string>
     <string name="disable_long_press_copy_title">Disable long-press copy</string>
-    <string name="disable_long_press_copy_summary">Stops long-press from copying directly in comments, posts and descriptions, to avoid accidents.</string>
+    <string name="disable_long_press_copy_summary">Intercepts native copy actions in supported comments and descriptions. Other entry points keep their native behavior.</string>
     <string name="enhance_long_press_copy_title">Free copy on long press</string>
-    <string name="enhance_long_press_copy_summary">Requires \"Disable long-press copy\". Covers comments, posts and descriptions with a more flexible text selection window.</string>
+    <string name="enhance_long_press_copy_summary">Requires \"Disable long-press copy\". Opens a text selection dialog in supported comments and descriptions, with native selection copying.</string>
     <string name="purify_share_title">Clean shared links</string>
     <string name="purify_share_summary">Removes tracking parameters from shared links and keeps necessary ones such as page and comment position.</string>
     <string name="full_number_format_title">Show full numbers</string>

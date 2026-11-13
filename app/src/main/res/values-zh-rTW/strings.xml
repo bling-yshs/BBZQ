@@ -60,9 +60,9 @@
     <string name="disable_live_room_vertical_swipe_title">禁止上下滑動切換直播間</string>
     <string name="disable_live_room_vertical_swipe_summary">停用直播間內上下滑動切換到其他直播間的手勢，避免誤觸。</string>
     <string name="disable_long_press_copy_title">移除長按複製</string>
-    <string name="disable_long_press_copy_summary">停用評論、動態及簡介的長按直接複製行為，避免誤觸。</string>
+    <string name="disable_long_press_copy_summary">接管已適配評論和簡介的原生複製動作，避免誤觸。未適配入口保留原生行為。</string>
     <string name="enhance_long_press_copy_title">長按自由複製</string>
-    <string name="enhance_long_press_copy_summary">需先開啟「移除長按複製」。涵蓋評論、動態及簡介，提供更靈活的文字選取視窗。</string>
+    <string name="enhance_long_press_copy_summary">需先開啟「移除長按複製」。在已適配評論和簡介中開啟文字選取視窗，支援系統選取複製。</string>
     <string name="purify_share_title">分享淨化</string>
     <string name="purify_share_summary">移除分享連結中的追蹤參數，保留分頁與評論定位等必要資訊。</string>
     <string name="full_number_format_title">完整數字顯示</string>
